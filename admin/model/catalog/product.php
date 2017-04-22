@@ -123,6 +123,9 @@ class ModelCatalogProduct extends Model {
 
 		$this->cache->delete('product');
 
+        if(isset($product_id))
+            return $product_id;
+
 		return $product_id;
 	}
 
@@ -275,6 +278,42 @@ class ModelCatalogProduct extends Model {
 			}
 		}
 
+        //insert product|color
+        $this->load->model('catalog/product_special_attribute');
+        $this->load->model('catalog/special_attribute');
+        if(!isset($data['product_series_image']))
+            $data['product_series_image'] = '';
+
+        $data['special_attribute_group_id'] = '2'; //2 is image
+        $this->model_catalog_product_special_attribute->editProductSpecialAttribute(array(
+            'product_id' => $product_id,
+            'special_attribute_id' => $this->model_catalog_special_attribute->getImageId($data)
+        ));
+
+        //insert product|master product
+        $this->load->model('catalog/product_master');
+        $master_product_id = $this->model_catalog_product_master->getMasterProductIdFromData($data);
+        if($master_product_id == 0 || $master_product_id > 0) //is either series or series item
+        {
+            $this->model_catalog_product_master->addLink(array(
+                'product_id' => $product_id,
+                'master_product_id' => $master_product_id,
+                'special_attribute_group_id' => '2' //2 is image
+            ));
+        }
+
+        //delete product|color
+        $this->load->model('catalog/product_special_attribute');
+        $this->model_catalog_product_special_attribute->deleteProductSpecialAttribute(array(
+            'product_id' => $product_id
+        ));
+
+        //delete product|master product
+        $this->load->model('catalog/product_master');
+        $this->model_catalog_product_master->deleteLink(array(
+            'product_id' => $product_id
+        ));
+
 		$this->cache->delete('product');
 	}
 
@@ -305,6 +344,11 @@ class ModelCatalogProduct extends Model {
 			$data['product_store'] = $this->getProductStores($product_id);
 			$data['product_recurrings'] = $this->getRecurrings($product_id);
 
+            $this->load->model('catalog/product_special_attribute');
+            $this->load->model('catalog/product_master');
+            $data = array_merge($data, array('product_color' => $this->model_catalog_product_special_attribute->getProductSpecialAttribute($product_id, '2'))); //2 is image
+            $data = array_merge($data, array('master_product' => $this->model_catalog_product_master->getMasterProductId($product_id, '2'))); //2 is image
+
 			$this->addProduct($data);
 		}
 	}
@@ -330,6 +374,28 @@ class ModelCatalogProduct extends Model {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "review WHERE product_id = '" . (int)$product_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "url_alias WHERE query = 'product_id=" . (int)$product_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "coupon_product WHERE product_id = '" . (int)$product_id . "'");
+
+
+        if(isset($data['product_series_image']))
+        {
+            $this->load->model('catalog/product_special_attribute');
+            $this->load->model('catalog/special_attribute');
+            $data['special_attribute_group_id'] = '2'; //2 is image
+            $this->model_catalog_product_special_attribute->editProductSpecialAttribute(array(
+                'product_id' => $product_id,
+                'special_attribute_id' => $this->model_catalog_special_attribute->getImageId($data)
+            ));
+        }
+
+        //update product|master product
+        $this->load->model('catalog/product_master');
+        $master_product_id = $this->model_catalog_product_master->getMasterProductIdFromData($data);
+
+        $this->model_catalog_product_master->editLink(array(
+            'product_id' => $product_id,
+            'master_product_id' => $master_product_id,
+            'special_attribute_group_id' => '2' //2 is image
+        ));
 
 		$this->cache->delete('product');
 	}

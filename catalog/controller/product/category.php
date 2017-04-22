@@ -309,6 +309,83 @@ class ControllerProductCategory extends Controller {
 				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.model&order=DESC' . $url)
 			);
 
+            $pds_show_thumbnails = $this->getData('pds_show_thumbnails', 1);
+
+
+            if($pds_show_thumbnails)
+            {
+                if(isset($data['products']))
+                {
+                    $pds_list_thumbnail_width = $this->getData('pds_list_thumbnail_width', 20);
+                    $pds_list_thumbnail_height = $this->getData('pds_list_thumbnail_height', 20);
+                    $pds_thumbnail_hover_effect = $this->getData('pds_thumbnail_hover_effect', 'rollover');
+
+                    if($pds_thumbnail_hover_effect == 'rollover')
+                    {
+                        $pds_list_hover_width = $this->config->get($this->config->get('config_theme') . '_image_product_width');
+                        $pds_list_hover_height = $this->config->get($this->config->get('config_theme') . '_image_product_height');
+                        $pds_list_thumbnail_class = 'pds-thumb-rollover';
+                    }
+                    else if($pds_thumbnail_hover_effect == 'preview')
+                    {
+                        $pds_list_hover_width = $this->getData('pds_list_preview_width', 200);
+                        $pds_list_hover_height = $this->getData('pds_list_preview_height', 200);
+                        $pds_list_thumbnail_class = 'preview';
+                    }
+                    else //none
+                    {
+                        $pds_list_thumbnail_class = '';
+                    }
+
+                    $this->load->model('catalog/product_master');
+                    $linkedProducts = $this->model_catalog_product_master->getAllLinkedProducts('2'); //2 is Image
+                    $product['pds'] = array();
+
+                    foreach ($data['products'] as &$product) //& is for reference
+                    {
+                        $product['pds'] = array();
+
+                        foreach ($linkedProducts as $result) {
+
+                            if($result['master_product_id'] == $product['product_id'])
+                            {
+                                $product_pds_image = $result['special_attribute_value'] != ''
+                                    ? $this->model_tool_image->resize($result['special_attribute_value'], $pds_list_thumbnail_width, $pds_list_thumbnail_height)
+                                    : $this->model_tool_image->resize($result['image'], $pds_list_thumbnail_width, $pds_list_thumbnail_height);
+
+                                if($pds_thumbnail_hover_effect == 'rollover' || $pds_thumbnail_hover_effect == 'preview')
+                                {
+                                    $product_pds_image_hover = $this->model_tool_image->resize($result['image'], $pds_list_hover_width, $pds_list_hover_height);
+                                }
+                                else //none
+                                {
+                                    $product_pds_image_hover = '';
+                                }
+
+                                $product['pds'][] = array(
+                                    'product_link' => $this->url->link('product/product', $url . '&product_id=' . $result['product_id']),
+                                    'product_name' => $result['product_name'],
+                                    'product_pds_image' => $product_pds_image,
+                                    'product_master_image' => $product['thumb'],
+                                    'product_pds_image_hover' => $product_pds_image_hover,
+                                    'pds_list_thumbnail_class' => $pds_list_thumbnail_class
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if(isset($data['products']))
+                {
+                    foreach ($data['products'] as &$product) //& is for reference
+                    {
+                        $product['pds'] = array();
+                    }
+                }
+            }
+
 			$url = '';
 
 			if (isset($this->request->get['filter'])) {

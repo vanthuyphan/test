@@ -239,11 +239,11 @@ $(window).resize(function() {quickbox();});
         <ul>
           <?php $j = $i + ceil(count($category['children']) / $category['column']); ?>
          <?php for (; $i < count($category['children']); $i++) { ?>
-          <?php if (isset($category['children'][$i])) { ?>										
+          <?php if (isset($category['children'][$i])) { ?>
 				<li>
 				<?php if(count($category['children'][$i]['childs'])>0){ ?>
-					<a href="<?php echo $category['children'][$i]['href']; ?>" class="activSub" ><?php echo $category['children'][$i]['name'];?></a> 					
-				<?php } else { ?>				
+					<a href="<?php echo $category['children'][$i]['href']; ?>" class="activSub" ><?php echo $category['children'][$i]['name'];?></a>
+				<?php } else { ?>
 					<a href="<?php echo $category['children'][$i]['href']; ?>" ><?php echo $category['children'][$i]['name']; ?></a>
 				<?php } ?>
 				<?php if ($category['children'][$i]['childs']) { ?>
@@ -252,8 +252,8 @@ $(window).resize(function() {quickbox();});
 					<li><a href="<?php echo $category['children'][$i]['childs'][$wi]['href']; ?>"  ><?php echo $category['children'][$i]['childs'][$wi]['name']; ?></a></li>
 				 <?php } ?>
 				</ul>
-			  <?php } ?>		  
-			</li>		
+			  <?php } ?>
+			</li>
           <?php } ?>
           <?php } ?>
         </ul>
@@ -284,3 +284,52 @@ $(window).resize(function() {quickbox();});
 </div>
 </div>
 </div>
+    <style>
+        .pds a, .pds a:hover, .pds a:visited
+        {
+            text-decoration: none;
+        }
+
+        .pds a.preview
+        {
+            display: inline-block;
+        }
+
+        .pds a.preview.pds-current, .pds a.pds-current
+        {
+            border-bottom: 3px solid orange;
+        }
+
+        #preview{
+            position: absolute;
+            border: 1px solid #DBDEE1;
+            background: #F8F8F8;
+            padding: 5px;
+            display: none;
+            color: #333;
+            z-index: 1000000;
+        }
+    </style>
+    <script type="text/javascript" src="catalog/view/javascript/imagepreview/imagepreview.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            pdsListRollover();
+        });
+
+        function pdsListRollover()
+        {
+            $('.pds a.pds-thumb-rollover').hover(function(){
+                //on hover
+                $this = $(this);
+                var hoverImage = $this.attr('rel');
+                $this.parents('.product-thumb').find('.image a img').attr('src', hoverImage);
+            }, function(){
+                //on unhover
+                $this = $(this);
+                var masterImage = $this.attr('master-image');
+                $this.parents('.product-thumb').find('.image a img').attr('src', masterImage);
+            });
+        }
+    </script>
+
+
