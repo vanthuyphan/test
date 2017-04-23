@@ -4991,9 +4991,7 @@ header.header-length {
     margin: 0 -15px 20px;
 }
 .content-top .container.breadcum{
-    background: #2c2c2c url("../image/megnor/bredcrumb.jpg") repeat scroll 50% 0;
     float: left;
-    min-height: 250px;
     overflow: hidden;
     padding: 35px 0;
     position: relative;

@@ -277,9 +277,6 @@ $(window).resize(function() {quickbox();});
 </div>
 <div class="main-content">
 <div class="content-top">
-<div class="container breadcum">
-<div class="row">
-<div id="title-content"> 
 </div>
 </div>
 </div>
