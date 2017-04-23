@@ -1399,17 +1399,30 @@ class ControllerCatalogProduct extends Controller {
 
 		$data['product_attributes'] = array();
 
-		foreach ($product_attributes as $product_attribute) {
-			$attribute_info = $this->model_catalog_attribute->getAttribute($product_attribute['attribute_id']);
+		if (empty($product_attributes)) {
+            $all_attributes = $this->model_catalog_attribute->getAttributes();
+            foreach ($all_attributes as $all_attribute) {
+                $data['product_attributes'][] = array(
+                    'attribute_id'                  => $all_attribute['attribute_id'],
+                    'name'                          => $all_attribute['name'],
+                    'product_attribute_description' => ''
+                );
+            }
 
-			if ($attribute_info) {
-				$data['product_attributes'][] = array(
-					'attribute_id'                  => $product_attribute['attribute_id'],
-					'name'                          => $attribute_info['name'],
-					'product_attribute_description' => $product_attribute['product_attribute_description']
-				);
-			}
-		}
+        } else {
+            foreach ($product_attributes as $product_attribute) {
+                $attribute_info = $this->model_catalog_attribute->getAttribute($product_attribute['attribute_id']);
+
+                if ($attribute_info) {
+                    $data['product_attributes'][] = array(
+                        'attribute_id'                  => $product_attribute['attribute_id'],
+                        'name'                          => $attribute_info['name'],
+                        'product_attribute_description' => $product_attribute['product_attribute_description']
+                    );
+                }
+            }
+        }
+
 
 		// Options
 		$this->load->model('catalog/option');
