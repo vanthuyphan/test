@@ -157,10 +157,11 @@
         margin-bottom: 10px;
         margin-left: 10px;
         margin-right: 10x;
+        text-align: center;
     }
 
     div.product-chooser div.product-chooser-item.selected {
-        border: 4px solid #428bca;
+        border: 4px solid #000000;
         background: #efefef;
         padding: 8px;
         filter: alpha(opacity=100);
