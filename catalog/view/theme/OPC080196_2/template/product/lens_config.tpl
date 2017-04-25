@@ -56,7 +56,6 @@
         padding: 0;
         list-style: none;
     }
-    global.css:1
     .form-container * {
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
@@ -157,6 +156,9 @@
         margin-bottom: 10px;
         margin-left: 10px;
         margin-right: 10x;
+    }
+
+    .title {
         text-align: center;
     }
 
