@@ -287,7 +287,7 @@
                     <h1>Do You Have Your Prescription Available?</h1>
                     <div class="row form-group product-chooser">
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <div class="product-chooser-item selected">
+                            <div class="product-chooser-item">
                                 <div class="col-xs-8 col-sm-8 col-md-12 col-lg-12">
                                     <span class="title">I'll send it later</span>
                                     <span class="description">Don't worry, we'll get your prescription after the order is placed.</span>
@@ -307,7 +307,7 @@
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <div id='enter_now' class="product-chooser-item">
+                            <div id='enter_now' class="product-chooser-item selected">
                                 <div class="col-xs-8 col-sm-8 col-md-12 col-lg-12">
                                     <span class="title">Yes</span>
                                     <span class="description">I would like to enter it now.</span>
@@ -1735,10 +1735,8 @@
                     } else {
                         $('#lens-form').hide();
                     }
-                    $(this).find('input[type="radio"]').prop("checked", true);
 
                 });
-                $('#lens-form').hide();
 
                 $('#pdl').hide();
                 $('#pdr').hide();
